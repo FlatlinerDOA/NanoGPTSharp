@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace PerceptivePyro.Whisper
 {
 
-    public class ResidualAttentionBlock : nn.Module<(Tensor x, Tensor? xa, Tensor? mask, Dictionary<Linear, Tensor>? kv_cache), Tensor>
+    public class ResidualAttentionBlock : nn.Module<(Tensor x, Tensor? xa, Tensor? mask, Dictionary<nn.Module, Tensor>? kv_cache), Tensor>
     {
         private MultiHeadAttention attn;
         private LayerNorm attn_ln;
@@ -37,9 +37,11 @@ namespace PerceptivePyro.Whisper
             RegisterComponents();
         }
 
-        public override Tensor forward((Tensor x, Tensor? xa, Tensor? mask, Dictionary<Linear, Tensor>? kv_cache) input)
+        public MultiHeadAttention Attn => this.attn;
+
+        public override Tensor forward((Tensor x, Tensor? xa, Tensor? mask, Dictionary<nn.Module, Tensor>? kv_cache) input)
         {
-            (Tensor x, Tensor? xa, Tensor? mask, Dictionary<Linear, Tensor>? kv_cache) = input;
+            (Tensor x, Tensor? xa, Tensor? mask, Dictionary<nn.Module, Tensor>? kv_cache) = input;
             var attn_output = this.attn.call(x);
             var attn_norm = this.attn_ln.call(attn_output);
 

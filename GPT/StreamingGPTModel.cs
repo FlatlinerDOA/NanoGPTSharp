@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using F = nn.functional;
+
 
 public class StreamingGPTModel : GPTModel
 {

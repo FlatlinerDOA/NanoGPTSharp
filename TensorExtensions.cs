@@ -1,6 +1,7 @@
 ﻿namespace PerceptivePyro;
 
 using System;
+using System.Numerics;
 
 public static class TensorExtensions
 {
@@ -12,6 +13,57 @@ public static class TensorExtensions
         backends.cuda.matmul.allow_tf32 = true; // allow tf32 on matmul
         backends.cudnn.allow_tf32 = true; // allow tf32 on cudnn
     }
+
+
+    public static IEnumerable<List<T>> ToLists<T>(this Tensor tensor) where T : unmanaged
+    {
+        for (int y = 0; y < tensor.shape[0]; y++)
+        {
+            yield return tensor[y, ..].data<T>().ToList<T>();
+        }
+    }
+
+    public static T[,] ToMultiDimensional2d<T>(this Tensor tensor) where T : unmanaged
+    {
+        var array = new T[tensor.shape[0], tensor.shape[1]];
+        for (int y = 0; y < tensor.shape[0]; y++)
+        {
+            for (var x = 0; x < tensor.shape[1]; x++)
+            {
+                array[y, x] = tensor[y, x].item<T>();
+            }
+        }
+
+        return array;
+    }
+
+
+    public static T[,] ToMultiDimensional<T>(this IReadOnlyList<T[]> arrays)
+    {
+        var array = new T[arrays.Count,arrays.Select(a => a.Length).Max()];
+        for (int y = 0; y < arrays.Count; y++)
+        {
+            var a = arrays[y];            
+            for (var i = 0; i < a.Length; i++)
+            {
+                array[y,i] = a[i];
+            }
+        }
+
+        return array;
+    }
+
+    public static ScalarType ToTensorType(this Type type) => type.Name switch
+    {
+        nameof(Boolean) => ScalarType.Bool,
+        nameof(Byte) => ScalarType.Int8,
+        nameof(Int32) => ScalarType.Int32,
+        nameof(Int64) => ScalarType.Int64,
+        nameof(Half) => ScalarType.BFloat16,
+        nameof(Single) => ScalarType.Float32,
+        nameof(Double) => ScalarType.Float64,
+        _ => throw new NotImplementedException()
+    };
 
     public static Tensor to_sparse(this Tensor tensor) => sparse_coo_tensor(tensor.SparseIndices, tensor.SparseValues, tensor.shape, ScalarType.Bool);
 

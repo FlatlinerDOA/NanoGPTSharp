@@ -29,7 +29,7 @@ public static class SafeTensors
     /// <param name="filename"></param>
     /// <param name="device"></param>
     /// <returns></returns>
-    public static IEnumerable<(string Name, Tensor Tensor)> LoadFile(string filename, string device)
+    public static IEnumerable<(string Name, Tensor Tensor)> LoadFile(string filename, Device device)
     {
         using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
 
@@ -76,7 +76,7 @@ public static class SafeTensors
         return metadata.OrderBy(m => m.Value.data_offsets?[0] ?? 0);
     }
 
-    public static Tensor CreateTensor(BinaryReader reader, SafeTensorMetadata info, int offset, string device)
+    public static Tensor CreateTensor(BinaryReader reader, SafeTensorMetadata info, int offset, Device device)
     {
         var dtype = dtypes[info.dtype];
         var shape = info.shape;

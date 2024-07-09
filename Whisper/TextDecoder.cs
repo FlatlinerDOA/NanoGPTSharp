@@ -1,6 +1,6 @@
 ﻿namespace PerceptivePyro.Whisper
 {
-    public class TextDecoder : nn.Module<(Tensor x, Tensor xa, Dictionary<Linear, Tensor>? kv_cache), Tensor>
+    public class TextDecoder : nn.Module<(Tensor x, Tensor xa, Dictionary<nn.Module, Tensor>? kv_cache), Tensor>
     {
         private Embedding token_embedding;
         private Parameter positional_embedding;
@@ -24,6 +24,12 @@
             this.RegisterComponents();
         }
 
+        public ModuleList<ResidualAttentionBlock> Blocks
+        {
+            get => this.blocks;
+            set => this.blocks = value;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -34,9 +40,9 @@
         /// the encoded audio features to be attended on.
         /// </param>
         /// <returns>logits </returns>
-        public override Tensor forward((Tensor x, Tensor xa, Dictionary<Linear, Tensor>? kv_cache) input)
+        public override Tensor forward((Tensor x, Tensor xa, Dictionary<nn.Module, Tensor>? kv_cache) input)
         {
-            (Tensor x, Tensor xa, Dictionary<Linear, Tensor>? kv_cache) = input;
+            (Tensor x, Tensor xa, Dictionary<nn.Module, Tensor>? kv_cache) = input;
             var offset = kv_cache != null && kv_cache.Count > 0 ? kv_cache.Values.First().shape[1] : 0;
             x = this.token_embedding.call(x) + this.positional_embedding[(int)offset..(int)(offset + x.shape[^1])];
             x = x.to_type(xa.dtype);

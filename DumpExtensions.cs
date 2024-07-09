@@ -21,7 +21,7 @@ public static class DumpExtensions
 
     public static string Stringify(this IEnumerable items) => "[ "  + string.Join(", ", items.Cast<object>().Select(i => i.Stringify())) + " ]";
  
-    public static string Stringify(this TorchSharp.Scalar item) =>
+    public static string Stringify(this Scalar item) =>
         item.Type switch
         {
             ScalarType.Float16 => item.ToDouble().ToString(),

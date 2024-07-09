@@ -254,7 +254,7 @@ public class WhisperTokenizer
 
     public IReadOnlyList<int> Encode(string text) => this.encoding.Encode(text);
 
-    string? Decode(List<int> token_ids)
+    public string? Decode(List<int> token_ids)
     {
         token_ids = [.. from t in token_ids where t < this.timestamp_begin select t];
         return this.encoding.Decode(token_ids);

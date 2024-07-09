@@ -5,7 +5,7 @@
     using TorchSharp.Modules;
     using F = nn.functional;
 
-    internal class MultiHeadAttention : nn.Module<(Tensor x, Tensor? xa, Tensor? mask, Dictionary<Linear, Tensor>? kv_cache), (Tensor, Tensor)>
+    public class MultiHeadAttention : nn.Module<(Tensor x, Tensor? xa, Tensor? mask, Dictionary<Linear, Tensor>? kv_cache), (Tensor, Tensor)>
     {
         private int n_head;
         private Linear query;
