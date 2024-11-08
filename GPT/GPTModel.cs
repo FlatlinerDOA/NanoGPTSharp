@@ -82,7 +82,7 @@ public class GPTModel : nn.Module<Tensor, Tensor?, bool, (Tensor logits, Tensor?
         {
             ["gpt2"] = new() { n_layer = 12, n_head = 12, n_embd = 768 },         // 124M params
             ["gpt2-medium"] = new() { n_layer = 24, n_head = 16, n_embd = 1024 }, // 350M params
-            ["gpt2-large"] = new() { n_layer = 36, n_head = 20, n_embd = 1280 },  // 774M params
+            ["gpt2-large"] = new() { n_layer = 36, n_head = 20, n_embd = 1280, },  // 774M params
             ["gpt2-xl"] = new() { n_layer = 48, n_head = 25, n_embd = 1600 },     // 1558M params
         };
 

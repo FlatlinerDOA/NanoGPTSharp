@@ -76,7 +76,7 @@ public static class SafeTensors
         return metadata.OrderBy(m => m.Value.data_offsets?[0] ?? 0);
     }
 
-    public static Tensor CreateTensor(BinaryReader reader, SafeTensorMetadata info, int offset, Device device)
+    public static Tensor CreateTensor(BinaryReader reader, SafeTensorMetadata info, long offset, Device device)
     {
         var dtype = dtypes[info.dtype];
         var shape = info.shape;
@@ -89,10 +89,8 @@ public static class SafeTensors
 
         // HACK: Load into an array first, doesn't avoid a copy, but just wanted to get it working. Limits tensors to 2gb or less.
         Tensor output = torch.empty(shape, dtype, torch.CPU);
-        output.bytes = b;
-        output.to(device);
-
-        return output;
+        b.CopyTo(output.bytes[..b.Length]);
+        return output.to(device);
     }
 
     /// <summary>

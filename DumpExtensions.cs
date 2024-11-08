@@ -1,4 +1,6 @@
-﻿namespace PerceptivePyro;
+﻿using System.Diagnostics;
+
+namespace PerceptivePyro;
 
 /// <summary>
 /// LINQPad style dump extensions for "stringify" nicely and printing out to the console.
@@ -9,6 +11,7 @@ public static class DumpExtensions
     {
         null => "<null>",
         string s => s,
+        IReadOnlyList<string> sl => string.Join('\n', sl),
         long i => i.ToString(),
         float f => f.ToString("0.000"),
         double d => d.ToString("0.000"),
@@ -19,7 +22,12 @@ public static class DumpExtensions
         _ => ((object)item)?.ToString() ?? "<null>"
     };
 
-    public static string Stringify(this IEnumerable items) => "[ "  + string.Join(", ", items.Cast<object>().Select(i => i.Stringify())) + " ]";
+    public static string Stringify(this IEnumerable items)
+    {
+        var lines = items.Cast<object>().Select(i => i.Stringify()).ToList();
+        var sep = lines.Max(i => i.Length) < 128 ? ", " : "\n";
+        return $"[ {string.Join(sep, lines)} ]";
+    }
  
     public static string Stringify(this Scalar item) =>
         item.Type switch

@@ -16,7 +16,7 @@ namespace PerceptivePyro.Whisper
         public static Tensor Sinusoids(int length, int channels, int max_timescale = 10000)
         {
             Contract.Assert(channels % 2 == 0);
-            var log_timescale_increment = torch.log(torch.tensor(max_timescale)).item<double>() / (channels / 2 - 1);
+            var log_timescale_increment = torch.log(torch.tensor(max_timescale)).item<float>() / (channels / 2 - 1);
 
             // Calculate inv_timescales
             var invTimescales = torch.exp(-log_timescale_increment * torch.arange(channels / 2));
